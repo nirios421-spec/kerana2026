@@ -265,7 +265,7 @@
     const isConfigured =
       SUPABASE_URL.startsWith("https://") &&
       !SUPABASE_URL.includes("TU_PROJECT_ID") &&
-      SUPABASE_PUBLISHABLE_KEY.startsWith("sb_publishable_");
+      (SUPABASE_PUBLISHABLE_KEY.startsWith("sb_publishable_") || SUPABASE_PUBLISHABLE_KEY.startsWith("eyJ"));
 
     const supabaseClient = isConfigured
       ? window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY)
@@ -679,9 +679,20 @@
     document.getElementById("prod-file").addEventListener("change", (e) => {
       const file = e.target.files && e.target.files[0];
       if (!file) return;
+      document.getElementById("prod-url").value = "";
       const previewUrl = URL.createObjectURL(file);
       document.getElementById("image-preview-img").src = previewUrl;
       document.getElementById("image-preview-label").textContent = `Nueva foto lista: ${file.name}`;
+      document.getElementById("image-preview-box").classList.remove("hidden");
+    });
+
+    // Vista previa al pegar enlace directo
+    document.getElementById("prod-url").addEventListener("input", (e) => {
+      const url = e.target.value.trim();
+      if (!url) return;
+      document.getElementById("prod-file").value = "";
+      document.getElementById("image-preview-img").src = url;
+      document.getElementById("image-preview-label").textContent = "Vista previa desde enlace";
       document.getElementById("image-preview-box").classList.remove("hidden");
     });
 
@@ -912,4 +923,3 @@
   </script>
 </body>
 </html>
-
